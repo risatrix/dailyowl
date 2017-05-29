@@ -4,11 +4,6 @@ import json
 
 from nltk.tokenize.moses import MosesDetokenizer
 
-# nltk.download('punkt')
-# nltk.download('maxent_treebank_pos_tagger')
-# nltk.download('averaged_perceptron_tagger')
-# nltk.download('perluniprops')
-
 # the base url to get the sortes text
 url = "http://api.aeneid.eu/sortes"
 
