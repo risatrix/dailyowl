@@ -1,8 +1,14 @@
-import requests
-import nltk
-import json
+from config import *
 
+import json
+import nltk
 from nltk.tokenize.moses import MosesDetokenizer
+
+import tweepy
+
+import requests
+
+
 
 # the base url to get the sortes text
 url = "http://api.aeneid.eu/sortes"
@@ -31,9 +37,20 @@ detokenizer = MosesDetokenizer()
 sentence = detokenizer.detokenize(text, return_str=True)
 print (sentence)
 
+# # get Twitter acess
+try:
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tweepy.API(auth)
+except:
+    print("Error: Authentication failed")
+
+# tweet the owl sentence
+api.update_status(sentence)
+
 # add some emoji for fun
 #test owl
-print(u'\U0001F989')
-#test chili peppers
-print(u"\U0001F336")
-print(u"\U000131B2")
+# print(u'\U0001F989')
+# #test chili peppers
+# print(u"\U0001F336")
+# print(u"\U000131B2")
