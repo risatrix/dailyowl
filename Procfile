@@ -1,1 +1,1 @@
-worker: python owlbot.js
+worker: python owlbot.py
