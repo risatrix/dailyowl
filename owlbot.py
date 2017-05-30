@@ -1,4 +1,4 @@
-from config import *
+import os
 
 import json
 
@@ -10,6 +10,12 @@ import requests
 import schedule
 import time
 import tweepy
+
+
+consumer_key = os.environ.get('consumer_key')
+consumer_secret = os.environ.get('consumer_secret')
+access_token = os.environ.get('access_token')
+access_token_secret = os.environ.get('access_token')
 
 def get_owl():
     # the base url to get the sortes text
