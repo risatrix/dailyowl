@@ -15,7 +15,7 @@ import tweepy
 consumer_key = os.environ.get('consumer_key')
 consumer_secret = os.environ.get('consumer_secret')
 access_token = os.environ.get('access_token')
-access_token_secret = os.environ.get('access_token')
+access_token_secret = os.environ.get('access_token_secret')
 
 def get_owl():
     # the base url to get the sortes text
@@ -57,6 +57,7 @@ def get_owl():
     api.update_status(sentence)
 
 schedule.every().day.at("08:30").do(get_owl)
+schedule.every().day.at("12:30").do(get_owl)
 
 while True:
     schedule.run_pending()
