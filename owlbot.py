@@ -21,12 +21,12 @@ def repunctuate(str):
     new_str = str.translate(translator)
     return new_str
 
+
 def get_owl():
-    # the base url to get the sortes text
+    # the base url to get the English sortes text from the API
     url = "http://api.aeneid.eu/sortes"
-
     r = requests.get(url)
-
+    # parse the json response
     doc = r.json()
     raw_text = doc['text'][0]
 
@@ -34,14 +34,14 @@ def get_owl():
     text = nltk.word_tokenize(raw_text)
     tokenized_list = nltk.pos_tag(text)
 
-    # find the first noun so we can replace it
+    # find the first noun so we can replace it, and keep track of where it's at
     replacement_index = ''
     for index, token in enumerate(tokenized_list):
         if token[1][:1] == 'N':
             replacement_index = index
             break
 
-    #  replace that word with 'owl'
+    #  replace that word with 'owl' using the index
     if replacement_index == 0:
         #capitalize if first word
         text[replacement_index] = 'Owl'
@@ -51,6 +51,7 @@ def get_owl():
     # put the sentence back together again
     detokenizer = MosesDetokenizer()
     sentence = detokenizer.detokenize(text, return_str=True)
+
     # replace non-final punctuation
     punct = sentence[-1:]
     punct = repunctuate(punct)
@@ -62,7 +63,7 @@ def get_owl():
 
 
 def make_tweet(str):
-    # get Twitter acess
+    # get Twitter access
     try:
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
@@ -79,11 +80,9 @@ def tweet_owl():
     make_tweet(tweet)
 
 
-get_owl()
-# schedule.every().day.at("08:30").do(tweet_owl)
-# schedule.every().day.at("12:30").do(tweet_owl)
-
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1)
-
+# schedule time  - 6 hrs = CST, also it uses 24-hr time
+schedule.every().day.at("13:30").do(tweet_owl)
+schedule.every().day.at("22:30").do(tweet_owl)
+while True:
+    schedule.run_pending()
+    time.sleep(1)
