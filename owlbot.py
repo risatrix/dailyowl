@@ -1,11 +1,7 @@
 import os
-
 import json
-
 import nltk
 from nltk.tokenize.moses import MosesDetokenizer
-
-
 import requests
 import schedule
 import time
@@ -16,6 +12,7 @@ consumer_key = os.environ.get('consumer_key')
 consumer_secret = os.environ.get('consumer_secret')
 access_token = os.environ.get('access_token')
 access_token_secret = os.environ.get('access_token_secret')
+
 
 def get_owl():
     # the base url to get the sortes text
@@ -44,8 +41,11 @@ def get_owl():
     detokenizer = MosesDetokenizer()
     sentence = detokenizer.detokenize(text, return_str=True)
     print (sentence)
+    return sentence
 
-    # # get Twitter acess
+
+def make_tweet(str):
+    # get Twitter acess
     try:
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
@@ -53,19 +53,18 @@ def get_owl():
     except:
         print("Error: Authentication failed")
 
-    # tweet the owl sentence
-    api.update_status(sentence)
+    # tweet the string
+    api.update_status(str)
 
-schedule.every().day.at("08:30").do(get_owl)
-schedule.every().day.at("12:30").do(get_owl)
+
+def tweet_owl():
+    tweet = get_owl()
+    make_tweet(tweet)
+
+schedule.every().day.at("08:30").do(tweet_owl)
+schedule.every().day.at("12:30").do(tweet_owl)
 
 while True:
     schedule.run_pending()
     time.sleep(1)
 
-# add some emoji for fun
-#test owl
-# print(u'\U0001F989')
-# #test chili peppers
-# print(u"\U0001F336")
-# print(u"\U000131B2")
