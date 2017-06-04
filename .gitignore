@@ -1,6 +1,7 @@
 config.txt
 config.py
 env
+.env
 
  __pycache__/*
  *.pyc
