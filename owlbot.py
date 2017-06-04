@@ -14,6 +14,13 @@ access_token = os.environ.get('access_token')
 access_token_secret = os.environ.get('access_token_secret')
 
 
+# to ensure that the sentence ends with !?.
+def repunctuate(str):
+    punctuation = ",-:;' "
+    translator = str.maketrans({key: "." for key in punctuation})
+    new_str = str.translate(translator)
+    return new_str
+
 def get_owl():
     # the base url to get the sortes text
     url = "http://api.aeneid.eu/sortes"
@@ -27,7 +34,7 @@ def get_owl():
     text = nltk.word_tokenize(raw_text)
     tokenized_list = nltk.pos_tag(text)
 
-    # find a word the first noun so we can replace it
+    # find the first noun so we can replace it
     replacement_index = ''
     for index, token in enumerate(tokenized_list):
         if token[1][:1] == 'N':
@@ -35,13 +42,23 @@ def get_owl():
             break
 
     #  replace that word with 'owl'
-    text[replacement_index] = 'owl'
+    if replacement_index == 0:
+        #capitalize if first word
+        text[replacement_index] = 'Owl'
+    else:
+        text[replacement_index] = 'owl'
 
     # put the sentence back together again
     detokenizer = MosesDetokenizer()
     sentence = detokenizer.detokenize(text, return_str=True)
-    print (sentence)
-    return sentence
+    # replace non-final punctuation
+    punct = sentence[-1:]
+    punct = repunctuate(punct)
+    sentence = sentence[:-1]
+    new_sentence = sentence + punct
+
+    print (new_sentence)
+    return new_sentence
 
 
 def make_tweet(str):
@@ -61,10 +78,12 @@ def tweet_owl():
     tweet = get_owl()
     make_tweet(tweet)
 
-schedule.every().day.at("08:30").do(tweet_owl)
-schedule.every().day.at("12:30").do(tweet_owl)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+get_owl()
+# schedule.every().day.at("08:30").do(tweet_owl)
+# schedule.every().day.at("12:30").do(tweet_owl)
+
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
 
