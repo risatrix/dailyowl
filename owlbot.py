@@ -26,7 +26,7 @@ def repunctuate(str):
     return new_str
 
 
-# catchall function to hit urls
+# catchall function to hit urls and return text from json data
 def get_data(url):
     r = requests.get(url)
     # parse the json response
@@ -81,7 +81,7 @@ def get_latin_owl():
     replacement_str = ''
     commutandum = ''
 
-    # loop through the list of tagged words
+    # loop through the list of tagged words, with
     for item in tagged_sentence:
         # some tags return None, hand with try/except
         try:
@@ -139,14 +139,26 @@ def make_tweet(str):
     # tweet the string
     api.update_status(str)
 
+
 #trial sentence upon launch
 get_owl()
 get_latin_owl()
 
 
-# # schedule time  - 6 hrs = CST, also it uses 24-hr time
-# schedule.every().day.at("13:30").do(tweet_owl)
-# schedule.every().day.at("22:30").do(tweet_owl)
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1)
+# define tweet functions as jobs for scheduler
+def tweet_latin_owl():
+    make_tweet(get_latin_owl())
+
+def tweet_owl():
+    make_tweet(get_owl())
+
+
+# schedule time  - 6 hrs = CST, also it uses 24-hr time
+schedule.every().day.at("13:30").do(tweet_owl)
+schedule.every().day.at("18:00").do(tweet_latin_owl)
+schedule.every().day.at("22:30").do(tweet_owl)
+schedule.every().day.at("06:00").do(tweet_latin_owl)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
