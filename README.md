@@ -19,16 +19,20 @@ birdwatching](https://en.wikipedia.org/wiki/Augury), so I thought the owl was in
 ## Fun with CLTK and Heroku!
 Well, that was as exciting I expected. Here's what didn't work:
 
-1. Using any Python install method from within the `post_compile` hook.
+1. Using any Python install method from within the `post_compile` hook (method suggested [here](https://stackoverflow.com/a/37574371) for NLTK before it was included automagically in Heroku).
 When the hook ran during deployment, the console said it was downloading the data, but after all was said and done there was not a trace of the `cltk_data` folder anywhere in the Heroku repo. Fun!
-Interestingly, if I used the individual Python commands from within the `heroku run bash` Python shell, everything installed just fine. If I created a separate Python install script file and ran it from the bash shell, it also worked just fine. Trying to do any of that from the post_compile hook? So much nope.
+
+Interestingly, if I used the individual Python commands from within the `heroku run bash` Python shell, everything installed just fine. If I created a separate Python install script file and ran it from the bash shell, it also worked just fine. Trying to do any of that from the `post_compile` hook? So much nope.
 
 2. Running a Python install script from Heroku's CLI. That is, using my local terminal and running `heroku run python my_install_script.py`. Said it was running, but when I went back into the shell, no folder. Still more nope!
 
-3. Flat-out copying the compiled cltk_data folders into the repo. (Yes, I know.)
-When I uploaded the entire compiled `cltk_data` folder to Heroku, all subfolders under `model` disappeared. Again, if I ran the Python install commands from the shell in bash, or I used git to clone them from within bash, the subfolders would populate correctly.
+As it turns out, there's an explanation [and fix](https://github.com/heroku/heroku-buildpack-python/issues/356) hidden in the "1 more comment" of the SO answer above; the latest version of the buildpack doesn't include data downloaded unless it's into the current working directory, not '/app', and you can't tell CLTK where to load its data, so, back to the drawing board.
 
-This lead me using git from the `post_compile` script to clone the models data, and it worked. ¯\_(ツ)_/¯
+3. Flat-out copying the compiled cltk_data folders into the repo. (Yes, I know.)
+When I uploaded the entire compiled `cltk_data` folder to Heroku, all subfolders under `model` disappeared. Again, if I ran the Python install commands from the Heroku bash shell, or I used git to clone them from within bash, the subfolders would populate correctly.
+
+Here's what worked:
+1 Using git in the `post_compile` script to clone the CLTK models data. ¯\_(ツ)_/¯
 
 I manually recreated the folder structure that cltk expects, and added it to the path in my main file, and that worked too.
 
