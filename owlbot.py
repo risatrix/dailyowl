@@ -11,14 +11,12 @@ import cltk
 from cltk.stem.latin.declension import CollatinusDecliner
 from cltk.tag.pos import POSTag
 
+# get Tiwtter access keys from env
 consumer_key = os.environ.get('consumer_key')
 consumer_secret = os.environ.get('consumer_secret')
 access_token = os.environ.get('access_token')
 access_token_secret = os.environ.get('access_token_secret')
 
-
-decliner = CollatinusDecliner()
-tagger = POSTag('latin')
 
 # to ensure that the sentence ends with !?.
 def repunctuate(str):
@@ -28,6 +26,7 @@ def repunctuate(str):
     return new_str
 
 
+# catchall function to hit urls
 def get_data(url):
     r = requests.get(url)
     # parse the json response
@@ -36,6 +35,7 @@ def get_data(url):
     return raw_text
 
 
+# make an owl sentence in English
 def get_owl():
     raw_text = get_data("http://api.aeneid.eu/sortes")
 
@@ -64,6 +64,8 @@ def get_owl():
     print (sentence)
     return sentence
 
+
+# make an owl sentence in Latin
 def get_latin_owl():
     raw_text = get_data("http://api.aeneid.eu/sortes?version=latin")
 
@@ -107,7 +109,9 @@ def get_latin_owl():
     raw_sentence = raw_text.replace(commutandum, replacement_str)
     sentence = clean_sentence(raw_sentence)
     print (sentence)
+    print(u'\U0001F989' + sentence + u'\U0001F989')
     return sentence
+
 
 def clean_sentence(sentence):
     #replace non-final punctuation
@@ -115,9 +119,12 @@ def clean_sentence(sentence):
     punct = repunctuate(punct)
     sentence = sentence[:-1]
     new_sentence = sentence + punct
-
-    print (new_sentence)
+    emojify(new_sentence)
     return new_sentence
+
+
+def emojify(str):
+    return u'\U0001F989' + str + u'\U0001F989'
 
 
 def make_tweet(str):
@@ -132,12 +139,9 @@ def make_tweet(str):
     # tweet the string
     api.update_status(str)
 
+#trial sentence upon launch
 get_owl()
 get_latin_owl()
-
-# def tweet_owl():
-#     tweet = get_owl()
-#     make_tweet(tweet)
 
 
 # # schedule time  - 6 hrs = CST, also it uses 24-hr time
