@@ -1,12 +1,14 @@
+import os
+import json
+import requests
+
 import cltk
 from cltk.stem.latin.declension import CollatinusDecliner
 from cltk.tag.pos import POSTag
 
-import os
-import json
 import nltk
 from nltk.tokenize.moses import MosesDetokenizer
-import requests
+
 import schedule
 import time
 import tweepy
@@ -17,7 +19,7 @@ rel_path = os.path.join('/app/cltk_data/latin/model/latin_models_cltk/')
 path = os.path.expanduser(rel_path)
 
 
-# get Tiwtter access keys from env
+# get Twitter access keys from env
 consumer_key = os.environ.get('consumer_key')
 consumer_secret = os.environ.get('consumer_secret')
 access_token = os.environ.get('access_token')
@@ -115,12 +117,11 @@ def get_latin_owl():
     raw_sentence = raw_text.replace(commutandum, replacement_str)
     sentence = clean_sentence(raw_sentence)
     print (sentence)
-    print(u'\U0001F989' + sentence + u'\U0001F989')
     return sentence
 
 
 def clean_sentence(sentence):
-    #replace non-final punctuation
+    #replace non-final punctuation and add owls
     punct = sentence[-1:]
     punct = repunctuate(punct)
     sentence = sentence[:-1]
