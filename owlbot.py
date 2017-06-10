@@ -125,9 +125,9 @@ def clean_sentence(sentence):
     punct = sentence[-1:]
     punct = repunctuate(punct)
     sentence = sentence[:-1]
-    new_sentence = sentence + punct
-    emojify(new_sentence)
-    return new_sentence
+    sentence = sentence + punct
+    sentence = emojify(sentence)
+    return sentence
 
 
 def emojify(str):
@@ -147,12 +147,12 @@ def make_tweet(str):
     api.update_status(str)
 
 
-#trial sentence upon launch
-get_owl()
-get_latin_owl()
+# #trial sentences for testing
+# get_owl()
+# get_latin_owl()
 
 
-# define tweet functions as jobs for scheduler
+#define tweet functions as jobs for scheduler
 def tweet_latin_owl():
     make_tweet(get_latin_owl())
 
@@ -160,7 +160,7 @@ def tweet_owl():
     make_tweet(get_owl())
 
 
-# schedule time  - 6 hrs = CST, also it uses 24-hr time
+# schedule time  - 6/7 hrs = CST, also it uses 24-hr time
 schedule.every().day.at("13:30").do(tweet_owl)
 schedule.every().day.at("18:00").do(tweet_latin_owl)
 schedule.every().day.at("22:30").do(tweet_owl)
