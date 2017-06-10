@@ -29,7 +29,7 @@ def repunctuate(str):
 
 
 def get_data(url):
-     r = requests.get(url)
+    r = requests.get(url)
     # parse the json response
     doc = r.json()
     raw_text = doc['text'][0]
@@ -61,11 +61,56 @@ def get_owl():
     detokenizer = MosesDetokenizer()
     raw_sentence = detokenizer.detokenize(text, return_str=True)
     sentence = clean_sentence(raw_sentence)
+    print (sentence)
     return sentence
 
+def get_latin_owl():
+    raw_text = get_data("http://api.aeneid.eu/sortes?version=latin")
 
-def clean_sentence(str)
-    replace non-final punctuation
+    # break down sentence into a list of words with syntax info
+    tagger = POSTag('latin')
+    tagged_sentence = tagger.tag_ngram_123_backoff(raw_text)
+
+    # create an array showing the various forms of bubo with parts of speech
+    decliner = CollatinusDecliner()
+    declined_owl = decliner.decline("bubo")
+
+    #create variables to collect the word to be replaced, and the replacement form
+    replacement_str = ''
+    commutandum = ''
+
+    # loop through the list of tagged words
+    for item in tagged_sentence:
+        # some tags return None, hand with try/except
+        try:
+            #get the tag info
+            syntax_str = item[1]
+            # check the part of speech, number, and case
+            if syntax_str[0] == 'N' and syntax_str[2] and syntax_str[7]:
+                commutandum = item[0]
+                number = syntax_str[2]
+                case = syntax_str[7]
+                # find the matching case and number for bubo
+                for owl in declined_owl:
+                    owl_syntax = owl[1]
+                    if owl_syntax[2].capitalize() == number and owl_syntax[7].capitalize() == case:
+                        replacement_str = owl[0]
+                        print (owl[0])
+                # stop after the first one, so we only replace one word
+                break
+            else:
+                pass
+        except:
+            pass
+
+    #replace the word
+    raw_sentence = raw_text.replace(commutandum, replacement_str)
+    sentence = clean_sentence(raw_sentence)
+    print (sentence)
+    return sentence
+
+def clean_sentence(sentence):
+    #replace non-final punctuation
     punct = sentence[-1:]
     punct = repunctuate(punct)
     sentence = sentence[:-1]
@@ -87,15 +132,17 @@ def make_tweet(str):
     # tweet the string
     api.update_status(str)
 
+get_owl()
+get_latin_owl()
 
-def tweet_owl():
-    tweet = get_owl()
-    make_tweet(tweet)
+# def tweet_owl():
+#     tweet = get_owl()
+#     make_tweet(tweet)
 
 
-# schedule time  - 6 hrs = CST, also it uses 24-hr time
-schedule.every().day.at("13:30").do(tweet_owl)
-schedule.every().day.at("22:30").do(tweet_owl)
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# # schedule time  - 6 hrs = CST, also it uses 24-hr time
+# schedule.every().day.at("13:30").do(tweet_owl)
+# schedule.every().day.at("22:30").do(tweet_owl)
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
