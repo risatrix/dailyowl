@@ -1,0 +1,19 @@
+# bin/install_cltk_dta
+#!/usr/bin/env bash
+
+echo "----> Starting cltk data installation"
+
+# Install the data using git
+# Don't ask
+
+source $BIN_DIR/utils
+
+mkdir cltk_data
+cd cltk_data
+mkdir latin
+cd latin
+mkdir model
+cd model
+git clone https://github.com/cltk/latin_models_cltk.git
+
+echo "----> Finished cltk data installation"

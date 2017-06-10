@@ -16,3 +16,12 @@ birdwatching](https://en.wikipedia.org/wiki/Augury), so I thought the owl was in
 - [ ] add reply functionality so you can get a personal response
 - [ ] probably add emoji or something so it won't try to tweet the same things twice
 
+## Fun with CLTK and Heroku!
+Well, that was exciting. Here's what didn't work:
+1. Using any Python install method in the post_compile hook. The console would say it was downloading the data, but after all was said and done there was not a trace of the cltk_data folder anywhere in Heroku-uploaded repo. Interestingly, if I used the same commands in the Python shell from within `heroku bash`, everything installed just fine.
+2. Flat-out copying the compiled cltk_data folders into the repo. None of the subfolders under `model` would upload to heroku. Again, if I ran the python install commands from bash, or I ran git from bash, the folders would populate correctly.
+
+My suspicion is that this has to do with write permissions or some such, but I'm not being paid to figure this out.
+
+I tried creating the folders manually in post_compile and using git to clone the models data, and it worked, so I'm going with that for now.
+

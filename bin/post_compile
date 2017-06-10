@@ -1,0 +1,12 @@
+#bin/post_compile
+#!/usr/bin/env bash
+
+echo "----> starting post-compile hook"
+
+if [ -f bin/install_cltk_data ]; then
+    echo "-----> Running install_cltk_data"
+    chmod +x bin/install_cltk_data
+    bin/install_cltk_data
+fi
+
+echo "----> Post-compile done"
