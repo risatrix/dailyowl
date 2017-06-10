@@ -1,3 +1,7 @@
+import cltk
+from cltk.stem.latin.declension import CollatinusDecliner
+from cltk.tag.pos import POSTag
+
 import os
 import json
 import nltk
@@ -7,9 +11,11 @@ import schedule
 import time
 import tweepy
 
-import cltk
-from cltk.stem.latin.declension import CollatinusDecliner
-from cltk.tag.pos import POSTag
+
+# add cltk models to path
+rel_path = os.path.join('/app/cltk_data/latin/model/latin_models_cltk/')
+path = os.path.expanduser(rel_path)
+
 
 # get Tiwtter access keys from env
 consumer_key = os.environ.get('consumer_key')
