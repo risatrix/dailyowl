@@ -17,13 +17,15 @@ birdwatching](https://en.wikipedia.org/wiki/Augury), so I thought the owl was in
 - [ ] probably add emoji or something so it won't try to tweet the same things twice
 
 ## Fun with CLTK and Heroku!
-Well, that was exciting. Here's what didn't work:
+Well, that was as exciting I expected. Here's what didn't work:
 
 1. Using any Python install method from within the `post_compile` hook.
 When the hook ran during deployment, the console said it was downloading the data, but after all was said and done there was not a trace of the `cltk_data` folder anywhere in the Heroku repo. Fun!
 Interestingly, if I used the individual Python commands from within the `heroku run bash` Python shell, everything installed just fine. If I created a separate Python install script file and ran it from the bash shell, it also worked just fine. Trying to do any of that from the post_compile hook? So much nope.
 
-2. Flat-out copying the compiled cltk_data folders into the repo. (Yes, I know.)
+2. Running a Python install script from Heroku's CLI. That is, using my local terminal and running `heroku run python my_install_script.py`. Said it was running, but when I went back into the shell, no folder. Still more nope!
+
+3. Flat-out copying the compiled cltk_data folders into the repo. (Yes, I know.)
 When I uploaded the entire compiled `cltk_data` folder to Heroku, all subfolders under `model` disappeared. Again, if I ran the Python install commands from the shell in bash, or I used git to clone them from within bash, the subfolders would populate correctly.
 
 This lead me using git from the `post_compile` script to clone the models data, and it worked. ¯\_(ツ)_/¯
