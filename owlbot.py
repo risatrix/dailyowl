@@ -7,12 +7,18 @@ import schedule
 import time
 import tweepy
 
+import cltk
+from cltk.stem.latin.declension import CollatinusDecliner
+from cltk.tag.pos import POSTag
 
 consumer_key = os.environ.get('consumer_key')
 consumer_secret = os.environ.get('consumer_secret')
 access_token = os.environ.get('access_token')
 access_token_secret = os.environ.get('access_token_secret')
 
+
+decliner = CollatinusDecliner()
+tagger = POSTag('latin')
 
 # to ensure that the sentence ends with !?.
 def repunctuate(str):

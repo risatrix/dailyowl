@@ -18,10 +18,16 @@ birdwatching](https://en.wikipedia.org/wiki/Augury), so I thought the owl was in
 
 ## Fun with CLTK and Heroku!
 Well, that was exciting. Here's what didn't work:
-1. Using any Python install method in the post_compile hook. The console would say it was downloading the data, but after all was said and done there was not a trace of the cltk_data folder anywhere in Heroku-uploaded repo. Interestingly, if I used the same commands in the Python shell from within `heroku bash`, everything installed just fine.
-2. Flat-out copying the compiled cltk_data folders into the repo. None of the subfolders under `model` would upload to heroku. Again, if I ran the python install commands from bash, or I ran git from bash, the folders would populate correctly.
 
-My suspicion is that this has to do with write permissions or some such, but I'm not being paid to figure this out.
+1. Using any Python install method from within the `post_compile` hook.
+When the hook ran during deployment, the console said it was downloading the data, but after all was said and done there was not a trace of the `cltk_data` folder anywhere in the Heroku repo. Fun!
+Interestingly, if I used the individual Python commands from within the `heroku run bash` Python shell, everything installed just fine. If I created a separate Python install script file and ran it from the bash shell, it also worked just fine. Trying to do any of that from the post_compile hook? So much nope.
 
-I tried creating the folders manually in post_compile and using git to clone the models data, and it worked, so I'm going with that for now.
+2. Flat-out copying the compiled cltk_data folders into the repo. (Yes, I know.)
+When I uploaded the entire compiled `cltk_data` folder to Heroku, all subfolders under `model` disappeared. Again, if I ran the Python install commands from the shell in bash, or I used git to clone them from within bash, the subfolders would populate correctly.
 
+This lead me using git from the `post_compile` script to clone the models data, and it worked. ¯\_(ツ)_/¯
+
+I manually recreated the folder structure that cltk expects, and added it to the path in my main file, and that worked too.
+
+My suspicion is that the pre-compile/upload issues have to do with write permissions or some such, but figuring that out is above my current pay grade. Better yet, someone who's getting paid can add CLTK to the Python buildpack! But definitely not me!
