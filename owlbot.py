@@ -59,9 +59,13 @@ def get_owl():
 
     # put the sentence back together again
     detokenizer = MosesDetokenizer()
-    sentence = detokenizer.detokenize(text, return_str=True)
+    raw_sentence = detokenizer.detokenize(text, return_str=True)
+    sentence = clean_sentence(raw_sentence)
+    return sentence
 
-    # replace non-final punctuation
+
+def clean_sentence(str)
+    replace non-final punctuation
     punct = sentence[-1:]
     punct = repunctuate(punct)
     sentence = sentence[:-1]
