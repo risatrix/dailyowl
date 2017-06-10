@@ -28,13 +28,16 @@ def repunctuate(str):
     return new_str
 
 
-def get_owl():
-    # the base url to get the English sortes text from the API
-    url = "http://api.aeneid.eu/sortes"
-    r = requests.get(url)
+def get_data(url):
+     r = requests.get(url)
     # parse the json response
     doc = r.json()
     raw_text = doc['text'][0]
+    return raw_text
+
+
+def get_owl():
+    raw_text = get_data("http://api.aeneid.eu/sortes")
 
     # break the sentence down into words, then parts of speech
     text = nltk.word_tokenize(raw_text)
