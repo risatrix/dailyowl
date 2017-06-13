@@ -12,12 +12,12 @@ The Sortes Virgilianae were a way of telling fortunes or answering questions by 
 birdwatching](https://en.wikipedia.org/wiki/Augury), so I thought the owl was in keeping with the general theme, in addition to being entertaining.
 
 ## TODOs
-- [ ] add Latin owl tweets (need to upload CLTK to heroku for this)
+- [x] add Latin owl tweets (need to upload CLTK to heroku for this)
 - [ ] add reply functionality so you can get a personal response
 - [ ] probably add emoji or something so it won't try to tweet the same things twice
 
 ## Fun with CLTK and Heroku!
-Well, that was as exciting I expected. Here's what didn't work:
+Well, that was as exciting as I expected. Here's what didn't work:
 
 1. Using any Python install method from within the `post_compile` hook (method suggested [here](https://stackoverflow.com/a/37574371) for NLTK before it was included automagically in Heroku).
 When the hook ran during deployment, the console said it was downloading the data, but after all was said and done there was not a trace of the `cltk_data` folder anywhere in the Heroku repo. Fun!
@@ -32,7 +32,7 @@ As it turns out, there's an explanation [and fix](https://github.com/heroku/hero
 When I uploaded the entire compiled `cltk_data` folder to Heroku, all subfolders under `model` disappeared. Again, if I ran the Python install commands from the Heroku bash shell, or I used git to clone them from within bash, the subfolders would populate correctly.
 
 Here's what worked:
-1 Using git in the `post_compile` script to clone the CLTK models data. ¯\_(ツ)_/¯
+1. Using git in the `post_compile` script to clone the CLTK models data. ¯\_(ツ)_/¯
 
 I manually recreated the folder structure that cltk expects, and added it to the path in my main file, and that worked too.
 
