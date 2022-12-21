@@ -1,4 +1,4 @@
-# Your Daily Owl
+# Your Daily Owl (No longer active as of 2022)
 A bot that tweets *sortes vergilianae*, but with owls.
 
 ## In More Detail
